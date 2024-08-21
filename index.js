@@ -1,9 +1,16 @@
 const express = require("express");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
+require("dotenv").config();
 
 const app = express();
 const server = createServer(app);
+
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("Welcome to our chat app Websocket API");
+});
 
 const io = new Server(server, {
   path: "/socket",
