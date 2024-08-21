@@ -1,9 +1,19 @@
+const express = require("express");
+const { createServer } = require("http");
 const { Server } = require("socket.io");
 
-const io = new Server({
-  /* options */
-  // cors: process.env.FRONTEND,
-  cors: "https://localhost:5173",
+const app = express();
+const server = createServer(app);
+
+const io = new Server(server, {
+  path: "/socket",
+  // wsEngine: ["ws", "wss"],
+  transports: ["websocket", "polling"],
+  cors: {
+    origin:
+      process.env.NODE_ENV === "production" ? false : ["http://localhost:5173"],
+  },
+  allowEIO3: true,
 });
 
 const port = process.env.PORT || 3020;
@@ -66,4 +76,7 @@ io.on("connection", (socket) => {
 });
 
 // io.listen(port);
-io.listen(3020);
+// io.listen(3020);
+server.listen(3020, () => {
+  console.log("Server start for socket");
+});
